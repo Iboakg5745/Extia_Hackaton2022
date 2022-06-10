@@ -1,11 +1,30 @@
 import express from 'express';
 import { Request } from 'node-fetch';
+import fetch from 'node-fetch';
 
 export const TravelController = express.Router();
 
 async function getWeather(city : String)
 {
-	return {"weather" : city}
+	let res = {"weather": null};
+	await fetch("https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=a359a042fe918e1ad8eb21795b23e814&units=metric",
+	{
+  		"headers": {
+    	"accept": "*/*",
+    	"accept-language": "en-US,en;q=0.9",
+    	"sec-fetch-dest": "empty",
+    	"sec-fetch-mode": "cors",
+    	"sec-fetch-site": "cross-site",
+    	"sec-gpc": "1"
+  	},
+  	"body": undefined,
+  	"method": "GET"
+	})
+	.then(async data => {
+		let resp = await data.json();
+		res = {"weather": resp.main};
+	}).catch(err => console.error(err));
+	return res;
 }
 
 async function getPopulation(city : String)
