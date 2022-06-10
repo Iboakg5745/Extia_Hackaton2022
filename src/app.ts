@@ -2,11 +2,12 @@ import express from 'express';
 import mongoose, {ConnectionOptions} from 'mongoose';
 import cors from 'cors';
 import { logger } from './logs/logger';
-import { travelController } from './controller/travelController';
+import { TravelController } from './controller/travelController';
 
 const app = express();
 
 
+app.use(express.json());
 app.use(cors());
 
 app.use(function (req, res, next) {
@@ -14,7 +15,7 @@ app.use(function (req, res, next) {
   next()
 })
 
-app.use("/travel", travelController);
+app.use("/travel", TravelController);
 
 app.get('/', async (req, res) => {
   res.status(500).json({message: "API Ready"});
