@@ -2,6 +2,7 @@ import express from 'express';
 import { Request } from 'node-fetch';
 import fetch from 'node-fetch';
 import { createClient } from 'redis';
+import { nextTick } from 'process';
 export const TravelController = express.Router();
 
 async function getWeather(city : String)
@@ -60,10 +61,13 @@ async function merger(json: any, from : String, to : String, cb : Function) {
 
 async function ComputeCalls(json: any, req : any)
 {
+	let widgets : String[] = ["price", "weather", "population"];
 	let funcs : Function[] = [getPrices, getWeather, getPopulation];
 	let resp = {};
 
 	for (let i = 0; i < funcs.length; i++) {
+		if (!req.body.widgets.includes(widgets[i]))
+			continue;
 		json = Object.assign (json, await merger(json, req.body.from, req.body.to, funcs[i]));
 	}
 	return json;
