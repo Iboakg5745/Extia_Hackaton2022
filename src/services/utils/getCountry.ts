@@ -11,8 +11,7 @@ export async function getCountry(city : String)
 
 	const value = await client.get('getCity-' + city);
 	if (value) {
-		console.log('getCity-' + city + " from cache.");
-		console.log(value);
+		console.log('getCity-' + city + " [" + value + "] from cache.");
 		return JSON.parse(value);
 	}
 	let res = {"getCity": null};

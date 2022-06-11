@@ -12,12 +12,12 @@ export async function getCovid(city : String)
 	const value = await client.get('covid-' + city);
 	if (value) {
 		console.log('covid-' + city + " from cache.");
-		console.log(value);
 		return JSON.parse(value);
 	}
 	let country = await getCountry(city);
+	console.log("FINAL: ", country);
 	let res = {"covid": null};
-	await fetch("https://covid-api.mmediagroup.fr/v1/cases?country=" + country,
+	await fetch("https://covid-api.mmediagroup.fr/v1/vaccines?country=" + country,
 	{
   		"headers": {
     	"accept": "*/*",

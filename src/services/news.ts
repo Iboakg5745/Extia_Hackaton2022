@@ -18,7 +18,6 @@ export async function getNews(city : String)
 		return JSON.parse(value);
 	}
 	let res = {"news": null};
-	console.log("FINAL", countryCode);
 	await fetch("https://newsapi.org/v2/top-headlines?country=" + countryCode + "&apiKey=8e465d1e374d4e3bb10140dfeaf216b2&pageSize=3",
 	{
   		"headers": {
