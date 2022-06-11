@@ -2,6 +2,7 @@ import express from 'express';
 import { getPopulation } from '../services/population';
 import { getWeather } from '../services/weather';
 import { getPrices } from '../services/price';
+import { getCovid } from '../services/covid';
 
 export const TravelController = express.Router();
 
@@ -14,8 +15,8 @@ async function merger(json: any, from : String, to : String, cb : Function) {
 
 async function ComputeCalls(json: any, req : any)
 {
-	let widgets : String[] = ["price", "weather", "population"];
-	let funcs : Function[] = [getPrices, getWeather, getPopulation];
+	let widgets : String[] = ["price", "weather", "population", "covid"];
+	let funcs : Function[] = [getPrices, getWeather, getPopulation, getCovid];
 	let resp = {};
 
 	for (let i = 0; i < funcs.length; i++) {
