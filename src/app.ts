@@ -18,6 +18,13 @@ app.use(function (req, res, next) {
 app.use("/travel", TravelController);
 
 app.get('/', async (req, res) => {
+	const regionNames = new Intl.DisplayNames(
+		['en'], {type: 'language'}
+	  );
+	  
+	  console.log(regionNames.of('France')); // 👉️ "American English"
+	  console.log(regionNames.of('en-GB')); // 👉️ "British English"
+	  console.log(regionNames.of('de-DE')); 
   res.status(500).json({message: "API Ready"});
 });
 
