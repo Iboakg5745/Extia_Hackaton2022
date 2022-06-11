@@ -9,13 +9,12 @@ export async function getCovid(city : String)
 	client.on('error', (err : any) => console.log('Redis Client Error', err));
 	await client.connect();
 
-	const value = await client.get('covid-' + city);
+	let country = await getCountry(city);
+	const value = await client.get('covid-' + country);
 	if (value) {
-		console.log('covid-' + city + " from cache.");
+		console.log('covid-' + country + " from cache.");
 		return JSON.parse(value);
 	}
-	let country = await getCountry(city);
-	console.log("FINAL: ", country);
 	let res = {"covid": null};
 	await fetch("https://covid-api.mmediagroup.fr/v1/vaccines?country=" + country,
 	{
@@ -33,9 +32,9 @@ export async function getCovid(city : String)
 	.then(async data => {
 		let resp = await data.json();
 		res = {"covid": resp};
-		await client.set('covid-' + city, JSON.stringify(res));
-		await client.expire('covid-' + city, 60 * 60);
-		console.log('covid-' + city + " from API Request.");
+		await client.set('covid-' + country, JSON.stringify(res));
+		await client.expire('covid-' + country, 60 * 60);
+		console.log('covid-' + country + " from API Request.");
 	}).catch(err => console.error(err));
 	return res;
 }

@@ -11,8 +11,7 @@ export async function getCountryCode(country : String)
 
 	const value = await client.get('getcountryCode-' + country);
 	if (value) {
-		console.log('getcountryCode-' + country + " from cache.");
-		console.log("value:", value);
+		console.log('getcountryCode-' + country + " [" + value + "] from cache.");
 		return value;
 	}
 	let res = {"getcountryCode": null};

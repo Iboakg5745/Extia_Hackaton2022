@@ -10,8 +10,7 @@ export async function getWeather(city : String)
 
 	const value = await client.get('weather-' + city);
 	if (value) {
-		console.log('weather-' + city + " from cache.");
-		console.log(value);
+		console.log('weather-' + city + " [" + value + "] from cache.");
 		return JSON.parse(value);
 	}
 	let res = {"weather": null};

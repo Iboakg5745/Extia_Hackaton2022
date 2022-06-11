@@ -27,7 +27,6 @@ export async function getCountry(city : String)
 		res = {"getCity": resp.data.country};
 		console.log(resp.data.country);
 		await client.set('getCity-' + city, JSON.stringify(resp.data.country));
-		await client.expire('getCity-' + city, 60 * 60);
 		console.log('getCity-' + city + " from API Request.");
 		return resp.data.country;
 	}).catch(function (error : any) {

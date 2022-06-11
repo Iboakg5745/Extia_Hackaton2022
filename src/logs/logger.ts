@@ -1,6 +1,3 @@
-import { fetchCallback } from '@sentry/tracing/dist/browser/request';
-import { channel } from 'diagnostics_channel';
-import fetch from 'node-fetch';
 import { NextFunction, Request, Response } from 'express';
 import {createLogger, format, transports} from 'winston';
 
@@ -40,25 +37,3 @@ export const internalLogger = (req: Request, res: Response, next: NextFunction) 
       log.body = req.body;
     next();
   };
-
-
-export const sendLog = (event: String, comment: String, channels: String[], ownerid: String) => {
-    if (process.env.NODE_ENV === 'production') {
-      logger.info("Sending " + event + " to log-service.");
-      fetch('https://us-central1-total-zodiac-310908.cloudfunctions.net/log', {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + process.env["LOG_API_KEY"],
-        },
-        body: JSON.stringify({
-          level: "production",
-          event,
-          comment,
-          channels,
-          ownerid
-        })
-      }).catch(error => logger.info(error));
-    }
-};

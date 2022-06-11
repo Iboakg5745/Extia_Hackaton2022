@@ -3,6 +3,11 @@ import mongoose, {ConnectionOptions} from 'mongoose';
 import cors from 'cors';
 import { logger } from './logs/logger';
 import { TravelController } from './controller/travelController';
+import { getPrices } from './services/price';
+import { getNews } from './services/news';
+import { getCountry } from './services/utils/getCountry';
+import { getCovid } from './services/covid';
+import { getWeather } from './services/weather';
 
 const app = express();
 
@@ -17,15 +22,34 @@ app.use(function (req, res, next) {
 
 app.use("/travel", TravelController);
 
+function randomNum(min: Number, max : Number) {
+	return Math.floor(Math.random() * (max.valueOf() - min.valueOf())) + min.valueOf();
+}
+
+const sleep = (milliseconds : any) => {
+	return new Promise(resolve => setTimeout(resolve, milliseconds))
+  }
+
 app.get('/', async (req, res) => {
-	const regionNames = new Intl.DisplayNames(
-		['en'], {type: 'language'}
-	  );
-	  
-	  console.log(regionNames.of('France')); // 👉️ "American English"
-	  console.log(regionNames.of('en-GB')); // 👉️ "British English"
-	  console.log(regionNames.of('de-DE')); 
-  res.status(500).json({message: "API Ready"});
+  	return res.status(500).json({message: "API Ready"});
+});
+
+app.get('/run', async (req, res) => {
+	const ExtiaCountries = [
+		'Aix-en-Provence', 'Bordeaux', 'Grenoble', 'Lausanne', 'Lille',
+		'Montpellier', 'Nantes', 'Paris', 'Porto', 'Rennes', 'Strasbourg',
+		'Toulon', 'Toulouse', 'Tours',
+	]
+	for (let i = 0; i < ExtiaCountries.length; i++) {
+		let resp = await getPrices(ExtiaCountries[randomNum(0, ExtiaCountries.length - 1)], ExtiaCountries[randomNum(0, ExtiaCountries.length - 1)]);
+		console.log(resp.data);
+		let randomCity = ExtiaCountries[i];
+		await getNews(randomCity);
+		await getCovid(randomCity);
+		await getWeather(randomCity);
+		await sleep(60000);
+	}
+  	return res.status(500).json({message: "API Ready"});
 });
 
 if (process.env.NODE_ENV !== 'production') {

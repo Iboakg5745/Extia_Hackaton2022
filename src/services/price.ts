@@ -14,7 +14,7 @@ export async function getPrices(from : String, to : String)
 	client.on('error', (err : any) => console.log('Redis Client Error', err));
 	await client.connect();
 
-	const value = await client.get('price-' + + from + "-" + to);
+	const value = await client.get('price-' + from + "-" + to);
 	if (value) {
 		console.log('price-' + from + "-" + to+ " from cache.");
 		return JSON.parse(value);
