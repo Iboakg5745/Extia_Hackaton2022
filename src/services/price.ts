@@ -1,19 +1,22 @@
 import fetch from 'node-fetch';
 import { createClient } from 'redis';
+import { getCountry } from './utils/getCountry';
 
-export async function getPrices(city : String)
+export async function getPrices(from : String, to : String)
 {
 	const encodedParams = new URLSearchParams();
-	encodedParams.append("cities", "[{\"name\":\"Istanbul\",\"country\":\"Turkey\"},{\"name\":\"Paris\",\"country\":\"France\"}]");
+	let fromCountry = await getCountry(from);
+	let toCountry = await getCountry(to);
+	encodedParams.append("cities", '[{"name":"' + from + '","country":"' + fromCountry + '"},{"name":"' + to + '","country":"' + toCountry + '"}]');
 	encodedParams.append("currencies", "[\"USD\"]");
 
 	const client = createClient();
 	client.on('error', (err : any) => console.log('Redis Client Error', err));
 	await client.connect();
 
-	const value = await client.get('price-' + city);
+	const value = await client.get('price-' + + from + "-" + to);
 	if (value) {
-		console.log('price-' + city + " from cache.");
+		console.log('price-' + from + "-" + to+ " from cache.");
 		return JSON.parse(value);
 	}
 	let res = {"price": null};
@@ -29,9 +32,9 @@ export async function getPrices(city : String)
 	.then(async data => {
 		let resp = await data.json();
 		res = {"price": resp};
-		await client.set('price-' + city, JSON.stringify(res));
-		await client.expire('price-' + city, 60 * 60 * 24 * 365);
-		console.log('price-' + city + " from API Request.");
+		await client.set('price-' + from + "-" + to, JSON.stringify(res));
+		await client.expire('price-' + from + "-" + to, 60 * 60 * 24 * 365);
+		console.log('price-' + from + "-" + to + " from API Request.");
 		return {"price" : resp}
 	}).catch(err => console.error(err));
 	return res;

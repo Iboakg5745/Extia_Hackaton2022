@@ -15,7 +15,7 @@ async function merger(json: any, from : String, to : String, cb : Function) {
 }
 
 async function mergerUnique(json: any, from : String, to : String, cb : Function) {
-	let res = await cb(from);
+	let res = await cb(from, to);
 
 	if (res && res.price && res.price.data && res.price.data.length > 1) {
 		Object.assign(json["" + from], res.price.data[0]);
