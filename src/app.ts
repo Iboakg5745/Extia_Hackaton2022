@@ -6,6 +6,7 @@ import { TravelController } from './controller/travelController';
 import { getPrices } from './services/price';
 import { getNews } from './services/news';
 import { getCountry } from './services/utils/getCountry';
+const schedule = require('node-schedule');
 import { getCovid } from './services/covid';
 import { getWeather } from './services/weather';
 
@@ -34,7 +35,7 @@ app.get('/', async (req, res) => {
   	return res.status(500).json({message: "API Ready"});
 });
 
-app.get('/run', async (req, res) => {
+async function startScheduling() {
 	const ExtiaCountries = [
 		'Aix-en-Provence', 'Bordeaux', 'Grenoble', 'Lausanne', 'Lille',
 		'Montpellier', 'Nantes', 'Paris', 'Porto', 'Rennes', 'Strasbourg',
@@ -49,7 +50,10 @@ app.get('/run', async (req, res) => {
 		await getWeather(randomCity);
 		await sleep(60000);
 	}
-  	return res.status(500).json({message: "API Ready"});
+};
+
+const job = schedule.scheduleJob('0 4 * * *', function(){
+	startScheduling();	
 });
 
 if (process.env.NODE_ENV !== 'production') {
